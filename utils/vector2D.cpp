@@ -106,8 +106,16 @@ auto Vector2D::operator/=(float scalar) -> Vector2D& {
 
 [[nodiscard]] auto Vector2D::normalized() const -> Vector2D {
     Vector2D cpy(*this);
-    cpy /= cpy.magnitude();
+    float mag = cpy.magnitude();
+    if (mag > 0) {
+        cpy /= cpy.magnitude();
+    }
     return cpy;
+}
+
+[[nodiscard]] auto Vector2D::get_ortho() const -> Vector2D {
+    Vector2D ortho(-this->y, this->x);
+    return ortho;
 }
 
 auto Vector2D::map(std::function<float (float)> function) -> void {
@@ -115,12 +123,12 @@ auto Vector2D::map(std::function<float (float)> function) -> void {
     this->y = function(this->y);
 }
 
-auto Vector2D::to_string() -> std::string {
+[[nodiscard]] auto Vector2D::to_string() -> std::string {
     char buffer[50];
     sprintf(buffer, "[%.2f, %.2f]", this->x, this->y);
     return std::string(buffer);
 }
 
-auto operator<< (std::ostream& output, Vector2D& vec) -> std::ostream& {
+auto operator<< (std::ostream& output, Vector2D&& vec) -> std::ostream& {
     output << vec.to_string();
 }

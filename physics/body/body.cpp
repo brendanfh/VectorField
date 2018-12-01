@@ -20,7 +20,7 @@ auto Body::get_mass() -> float {
 }
 
 
-auto Body::get_force_position(int scale) -> Vector2D& {
+auto Body::get_force_position(int scale) -> Vector2D {
     Vector2D pos = this->body_pos / scale;
     pos.map([](float f) { return std::floor(f); });
     return pos;

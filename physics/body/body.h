@@ -14,7 +14,7 @@ class Body {
 
         auto get_position() -> Vector2D&;
         auto get_mass() -> float;
-        auto get_force_position(int scale) -> Vector2D&;
+        auto get_force_position(int scale) -> Vector2D;
         auto apply_force(Vector2D&& force) -> void;
 
         ~Body();

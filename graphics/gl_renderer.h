@@ -4,10 +4,11 @@
 #include <GLES3/gl3.h>
 #include <iostream>
 #include <memory>
+#include "../physics/vector_field/vector_field.h"
 
 class GL_Renderer {
     private:
-        std::unique_ptr<float[]> m_vertex_data;
+        float* m_vertex_data;
 
         GLuint m_vertex_buffer, m_index_buffer;
         GLuint m_vertex_shader, m_fragment_shader;
@@ -28,6 +29,8 @@ class GL_Renderer {
 
         auto setup() -> void;
         auto rebuffer_data() -> void;
+
+        auto update_field(Vector_Field& vf) -> void;
 
         auto render() -> void;
 };

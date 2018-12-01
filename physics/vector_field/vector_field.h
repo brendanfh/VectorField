@@ -20,9 +20,15 @@ class Vector_Field {
         Vector_Field(int scale_factor, int width, int height);
 
         auto step() -> void;
+        auto step(int pos) -> void;
         auto add_gravity_well(int x, int y, float gravForce) -> void;
+        auto add_explosion(int x, int y, float gravForce) -> void;
+        auto add_curl(int x, int y, float gravForce) -> void;
         auto get_force(int x, int y) -> Vector2D;
         auto get_scale_factor() -> int;
+        auto get_width() -> int;
+        auto get_height() -> int;
+        auto get_total_vectors() -> int;
 
         ~Vector_Field();
 };
