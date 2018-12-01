@@ -6,6 +6,7 @@
 
 #include "graphics/gl_renderer.h"
 #include "graphics/glfw_window.h"
+#include "physics/body/body.h"
 #include "physics/vector_field/vector_field.h"
 
 #define NUM_THREADS 4
@@ -28,10 +29,9 @@ void* threading(void* test){
 }
 
 auto main() -> int {
-
-    pthread_barrier_init(&update_barrier, NULL, NUM_THREADS + 1);
-    pthread_t id[NUM_THREADS];
-    int thread_id_parameter[NUM_THREADS];
+    //pthread_barrier_init(&update_barrier, NULL, NUM_THREADS + 1);
+    //pthread_t id[NUM_THREADS];
+    //int thread_id_parameter[NUM_THREADS];
 
     /*
     for(int i = 0; i < NUM_THREADS; i++){
@@ -40,16 +40,12 @@ auto main() -> int {
     }
     */
 
+    Body* bodies = new Body[10000];
+    for (int i = 0; i < 10000; i++) {
+        bodies[i].set_pos(((float)(rand() % 1000)), ((float)(rand() % 1000)));
+    }
+
     field = new Vector_Field(10,100,100);
-
-//    field->add_gravity_well(0,0,10.0f);
-    std::cout << "position (1,1): " << field->get_force(1,1).to_string() << std::endl;
-    std::cout << "position (0,1): " << field->get_force(0,1).to_string() << std::endl;
-    std::cout << "position (1,0): " << field->get_force(1,0).to_string() << std::endl;
-
-//    field->step();
-    std::cout << "position (2,2): " << field->get_force(2,2).to_string() << std::endl;
-    
 
     GLFW_Window window(800, 600);
     window.create();
@@ -58,25 +54,33 @@ auto main() -> int {
     gl_renderer.setup();
 
     int t = 0;
-    int n = 60;
-
     while (!window.should_close()) {
-        n--;
-        if (n == 0) {
-            t += 1;
-            n = 50;
-        }
+        t += 1;
         field->add_gravity_well(30, 30, 1.0f);
-        field->add_gravity_well(35, 30, 1.0f);
-        field->add_gravity_well(60, 40, 2.0f);
-        field->add_gravity_well(20, 90, 2.0f);
-        field->add_gravity_well(99, 99, 2.5f);
+        //field->add_gravity_well(35, 30, 1.0f);
+        //field->add_gravity_well(60, 40, 2.0f);
+        //field->add_gravity_well(20, 90, 2.0f);
+        //field->add_gravity_well(99, 99, 2.5f);
 
-        field->add_curl(50, 50, 5.f);
-        field->add_curl(t, 55, (float)sin(t / 5.0f) * 3);
-        field->add_curl(50, 60, -3.f);
+        field->add_gravity_well(50, 50, 1.f);
+        //field->add_curl(t, 55, (float)sin(t / 5.0f) * 3);
+        field->add_curl(50, 60, -.5f);
+
+        field->add_explosion((int)(sin(t / 120.f) * 40) + 50, 90, 4.f);
+        field->add_explosion(-(int)(sin(t / 120.f) * 40) + 50, 10, 4.f);
+        field->add_explosion(90, (int)(sin(t / 120.f) * 40) + 50, 4.f);
+        field->add_explosion(10, -(int)(sin(t / 120.f) * 40) + 50, 4.f);
 
         field->step();
+
+        for (int i = 0; i < 10000; i++) {
+            Vector2D pos = bodies[i].get_force_position(10);
+            bodies[i].apply_force(field->get_force((int)pos.x, (int)pos.y));
+            bodies[i].update(0.06);
+
+            Vector2D new_pos = bodies[i].get_position();
+            gl_renderer.update_particle(i, new_pos.x, new_pos.y);
+        }
 
         gl_renderer.update_field(*field);
         gl_renderer.rebuffer_data();

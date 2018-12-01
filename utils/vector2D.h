@@ -15,8 +15,8 @@ class Vector2D {
         auto operator=(Vector2D&& vec) -> Vector2D&;
         ~Vector2D();
 
-        auto operator+(Vector2D& other) -> Vector2D;
-        auto operator-(Vector2D& other) -> Vector2D;
+        auto operator+(const Vector2D& other) -> Vector2D;
+        auto operator-(const Vector2D& other) -> Vector2D;
         auto operator*(float scalar) -> Vector2D;
         auto operator/(float scalar) -> Vector2D;
 

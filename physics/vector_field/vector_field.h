@@ -24,6 +24,7 @@ class Vector_Field {
         auto add_gravity_well(int x, int y, float gravForce) -> void;
         auto add_explosion(int x, int y, float gravForce) -> void;
         auto add_curl(int x, int y, float gravForce) -> void;
+        auto add_wall(int x, int y, int width, int height) -> void;
         auto get_force(int x, int y) -> Vector2D;
         auto get_scale_factor() -> int;
         auto get_width() -> int;

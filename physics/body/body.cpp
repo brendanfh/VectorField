@@ -1,6 +1,11 @@
 #include "body.h"
 #include <cmath>
 
+Body::Body()
+    : body_pos(Vector2D(0, 0)), body_vel(Vector2D(0, 0)), body_acc(Vector2D(0, 0)), mass(1)
+{
+}
+
 Body::Body(Vector2D&& start_pos, float start_mass) {
     this->body_pos = start_pos;
     this->mass = start_mass;
@@ -14,6 +19,10 @@ auto Body::get_position() -> Vector2D& {
     return this->body_pos;
 }
 
+auto Body::set_pos(float x, float y) -> void {
+    this->body_pos.x = x;
+    this->body_pos.y = y;
+}
 
 auto Body::get_mass() -> float {
     return this->mass;
@@ -26,11 +35,15 @@ auto Body::get_force_position(int scale) -> Vector2D {
     return pos;
 }
 
+auto Body::update(float t) -> void {
+    this->body_vel = this->body_vel + (this->body_acc * t / 2);
+    this->body_pos = this->body_pos + (this->body_vel * t);
+
+    this->time--;
+}
 
 auto Body::apply_force(Vector2D&& force) -> void {
     this->body_acc = force/this->mass;
-    this->body_vel += this->body_acc;
-    this->body_pos += this->body_vel;
 }
 
 

@@ -13,7 +13,7 @@ Vector_Field::Vector_Field(int scale_factor, int width, int height) {
     newField = std::unique_ptr<Vector2D[]>(new Vector2D[width * height]);
 }
 
-auto Vector_Field::is_part_of_field(int width, int height) -> bool {
+inline auto Vector_Field::is_part_of_field(int width, int height) -> bool {
     if(width < 0 || width >= field_width)
         return false;
     else if(height < 0 || height >= field_height)
@@ -52,16 +52,17 @@ auto Vector_Field::step(int pos) -> void {
     int row = pos / field_width;
     int column = pos % field_width;
 
-    float cum_x = 0, cum_y = 0, cum_mag;
+    float cum_x = 0, cum_y = 0, cum_mag, mag;
     for(int i = -1; i <= 1; i++) {
         int width_to_test = column + i;
         for(int x = -1; x <= 1; x++) {
             int height_to_test = row + x;
             if(is_part_of_field(width_to_test, height_to_test)) {
                 Vector2D vector_to_test = field[height_to_test * field_width + width_to_test];
-                cum_x += vector_to_test.x * vector_to_test.magnitude();
-                cum_y += vector_to_test.y * vector_to_test.magnitude();
-                cum_mag += vector_to_test.magnitude();
+                mag = vector_to_test.magnitude();
+                cum_x += vector_to_test.x * mag;
+                cum_y += vector_to_test.y * mag;
+                cum_mag += mag;
             }
         }
     }
@@ -116,7 +117,7 @@ auto Vector_Field::add_curl(int x, int y, float gravForce) -> void {
         std::cout << "Attempted to add curl ouside of field" << std::endl;
         return;        
     }
-       
+
     Vector2D ourVector = field[x + (field_width * y)];
     int val;
     for(int w = -1; w <= 1; w++) {
@@ -129,6 +130,14 @@ auto Vector_Field::add_curl(int x, int y, float gravForce) -> void {
                 adj = (adj.get_ortho()).normalized();
                 field[val] = adj * gravForce;
             }
+        }
+    }
+}
+
+auto Vector_Field::add_wall(int x, int y, int width, int height) -> void {
+    for(int i = x; i < width; i++){
+        for(int p = y; p < height; p++){
+            field[i + (p * field_width)] = 0;
         }
     }
 }

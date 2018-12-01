@@ -8,8 +8,9 @@ const char *vertex_shader_src =
     "}";
 
 const char *fragment_shader_src =
+    "uniform vec3 u_col;"
     "void main() {"
-    "   gl_FragColor = vec4(1, 1, 1, 1);"
+    "   gl_FragColor = vec4(u_col, 1);"
     "}";
 
 
@@ -61,14 +62,21 @@ auto GL_Renderer::setup() -> void {
 
     long n_verticies = vec_width * vec_height * 4;
     m_vertex_data = new float[n_verticies * 2];
+    m_particle_data = new float[n_verticies * 2];
     for (long i = 0; i < n_verticies; i++) {
         m_vertex_data[i * 2 + 0] = 0.0f;
         m_vertex_data[i * 2 + 1] = 0.0f;
+        m_particle_data[i * 2 + 0] = 0.0f;
+        m_particle_data[i * 2 + 1] = 0.0f;
     }
 
     glGenBuffers(1, &this->m_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, n_verticies * 2 * 4, m_vertex_data, GL_DYNAMIC_DRAW);
+
+    glGenBuffers(1, &this->m_particle_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, this->m_particle_buffer);
+    glBufferData(GL_ARRAY_BUFFER, n_verticies * 2 * 4, m_particle_data, GL_DYNAMIC_DRAW);
 
     long n_indicies = vec_width * vec_height * 6;
     std::unique_ptr<GLuint[]> index_data(new GLuint[n_indicies]);
@@ -92,12 +100,12 @@ auto GL_Renderer::setup() -> void {
     m_program = link_program(m_vertex_shader, m_fragment_shader);
 
     m_proj_mat_loc = glGetUniformLocation(m_program, "u_proj");
+    m_u_col_loc = glGetUniformLocation(m_program, "u_col");
     m_a_pos_loc = glGetAttribLocation(m_program, "a_pos");
 
     glClearColor(0, 0, 0, 1);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-    //glCullFace(GL_CW);
 }
 
 
@@ -138,10 +146,24 @@ auto GL_Renderer::update_field(Vector_Field& vf) -> void {
 }
 
 
+auto GL_Renderer::update_particle(int index, float x, float y) -> void {
+    int size = 3;
+    m_particle_data[index * 8 + 0] = x + 0;
+    m_particle_data[index * 8 + 1] = y + 0;
+    m_particle_data[index * 8 + 2] = x + size;
+    m_particle_data[index * 8 + 3] = y + 0;
+    m_particle_data[index * 8 + 4] = x + size;
+    m_particle_data[index * 8 + 5] = y + size;
+    m_particle_data[index * 8 + 6] = x + 0;
+    m_particle_data[index * 8 + 7] = y + size;
+}
+
+
 auto GL_Renderer::rebuffer_data() -> void {
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-
     glBufferSubData(GL_ARRAY_BUFFER, 0, vec_width * vec_height * 4 * 2 * 4, m_vertex_data);
+    glBindBuffer(GL_ARRAY_BUFFER, m_particle_buffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vec_width * vec_height * 4 * 2 * 4, m_particle_data);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -151,12 +173,6 @@ auto GL_Renderer::render() -> void {
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(m_program);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-
-    glEnableVertexAttribArray(m_a_pos_loc);
-    glVertexAttribPointer(m_a_pos_loc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*) 0);
-
     const float mat[9] = {
         2.f / 1000.f, 0.f, 0.f,
         0.f, -2.f / 1000.f, 0.f,
@@ -165,6 +181,19 @@ auto GL_Renderer::render() -> void {
 
     glUniformMatrix3fv(m_proj_mat_loc, 1, GL_FALSE, (const GLfloat*) mat);
 
+    glUseProgram(m_program);
+    glEnableVertexAttribArray(m_a_pos_loc);
+    
+    glUniform3f(m_u_col_loc, 1, 1, 1);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
+    glVertexAttribPointer(m_a_pos_loc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*) 0);
+
+    glDrawElements(GL_TRIANGLES, 6 * vec_width * vec_height, GL_UNSIGNED_INT, (void*) 0);
+
+    glUniform3f(m_u_col_loc, 1, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_particle_buffer);
+    glVertexAttribPointer(m_a_pos_loc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*) 0);
     glDrawElements(GL_TRIANGLES, 6 * vec_width * vec_height, GL_UNSIGNED_INT, (void*) 0);
 
     glDisableVertexAttribArray(m_a_pos_loc);

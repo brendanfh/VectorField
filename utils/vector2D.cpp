@@ -51,12 +51,12 @@ Vector2D::~Vector2D() {
 }
 
 
-auto Vector2D::operator+(Vector2D& other) -> Vector2D { 
+auto Vector2D::operator+(const Vector2D& other) -> Vector2D { 
     return Vector2D(this->x + other.x, this->y + other.y);
 }
 
 
-auto Vector2D::operator-(Vector2D& other) -> Vector2D { 
+auto Vector2D::operator-(const Vector2D& other) -> Vector2D { 
     return Vector2D(this->x - other.x, this->y - other.y);
 }
 

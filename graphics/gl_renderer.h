@@ -9,13 +9,16 @@
 class GL_Renderer {
     private:
         float* m_vertex_data;
+        float* m_particle_data;
 
         GLuint m_vertex_buffer, m_index_buffer;
+        GLuint m_particle_buffer;
+
         GLuint m_vertex_shader, m_fragment_shader;
 
         GLuint m_program;
 
-        GLint m_proj_mat_loc, m_a_pos_loc, m_a_col_loc;
+        GLint m_proj_mat_loc, m_a_pos_loc, m_u_col_loc;
 
         int vec_width;
         int vec_height;
@@ -31,6 +34,7 @@ class GL_Renderer {
         auto rebuffer_data() -> void;
 
         auto update_field(Vector_Field& vf) -> void;
+        auto update_particle(int index, float x, float y) -> void;
 
         auto render() -> void;
 };
