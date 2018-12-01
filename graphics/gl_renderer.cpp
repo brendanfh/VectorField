@@ -147,7 +147,7 @@ auto GL_Renderer::update_field(Vector_Field& vf) -> void {
 
 
 auto GL_Renderer::update_particle(int index, float x, float y) -> void {
-    int size = 3;
+    int size = 5;
     m_particle_data[index * 8 + 0] = x + 0;
     m_particle_data[index * 8 + 1] = y + 0;
     m_particle_data[index * 8 + 2] = x + size;
@@ -170,12 +170,12 @@ auto GL_Renderer::rebuffer_data() -> void {
 
 
 auto GL_Renderer::render() -> void {
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0.1, 0.1, 0.1, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
     const float mat[9] = {
-        2.f / 1000.f, 0.f, 0.f,
-        0.f, -2.f / 1000.f, 0.f,
+        2.f / 2000.f, 0.f, 0.f,
+        0.f, -2.f / 2000.f, 0.f,
         -1.f, 1.f, 1.f
     };
 
@@ -184,13 +184,13 @@ auto GL_Renderer::render() -> void {
     glUseProgram(m_program);
     glEnableVertexAttribArray(m_a_pos_loc);
     
-    glUniform3f(m_u_col_loc, 1, 1, 1);
+    glUniform3f(m_u_col_loc, 1, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
     glVertexAttribPointer(m_a_pos_loc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*) 0);
 
     glDrawElements(GL_TRIANGLES, 6 * vec_width * vec_height, GL_UNSIGNED_INT, (void*) 0);
 
-    glUniform3f(m_u_col_loc, 1, 0, 0);
+    glUniform3f(m_u_col_loc, 1, 1, 1);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_particle_buffer);
     glVertexAttribPointer(m_a_pos_loc, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*) 0);

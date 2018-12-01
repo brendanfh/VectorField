@@ -42,41 +42,49 @@ auto main() -> int {
 
     Body* bodies = new Body[10000];
     for (int i = 0; i < 10000; i++) {
-        bodies[i].set_pos(((float)(rand() % 1000)), ((float)(rand() % 1000)));
+        bodies[i].set_pos(((float)(rand() % 2000)), ((float)(rand() % 2000)));
     }
 
-    field = new Vector_Field(10,100,100);
+    field = new Vector_Field(10,200,200);
 
-    GLFW_Window window(800, 600);
+    GLFW_Window window(1500, 1000);
     window.create();
 
-    GL_Renderer gl_renderer(100, 100);
+    GL_Renderer gl_renderer(200, 200);
     gl_renderer.setup();
 
     int t = 0;
     while (!window.should_close()) {
         t += 1;
-        field->add_gravity_well(30, 30, 1.0f);
+        //field->add_gravity_well(30, 30, 1.0f);
         //field->add_gravity_well(35, 30, 1.0f);
         //field->add_gravity_well(60, 40, 2.0f);
         //field->add_gravity_well(20, 90, 2.0f);
         //field->add_gravity_well(99, 99, 2.5f);
+        field->add_curl(50, 100, 3.f);
+        field->add_curl(150, 100, -3.f);
+        //field->add_wall(100, 40, 20, 20);
 
-        field->add_gravity_well(50, 50, 1.f);
-        //field->add_curl(t, 55, (float)sin(t / 5.0f) * 3);
-        field->add_curl(50, 60, -.5f);
+        //field->add_gravity_well(50, 50, 1.f);
+        ////field->add_curl(t, 55, (float)sin(t / 5.0f) * 3);
+        //field->add_curl(50, 60, -.5f);
 
-        field->add_explosion((int)(sin(t / 120.f) * 40) + 50, 90, 4.f);
-        field->add_explosion(-(int)(sin(t / 120.f) * 40) + 50, 10, 4.f);
-        field->add_explosion(90, (int)(sin(t / 120.f) * 40) + 50, 4.f);
-        field->add_explosion(10, -(int)(sin(t / 120.f) * 40) + 50, 4.f);
+        //field->add_explosion((int)(sin(t / 120.f) * 40) + 50, 90, 4.f);
+        //field->add_explosion(-(int)(sin(t / 120.f) * 40) + 50, 10, 4.f);
+        //field->add_explosion(90, -(int)(sin(t / 120.f) * 40) + 50, 4.f);
+        //field->add_explosion(10, (int)(sin(t / 120.f) * 40) + 50, 4.f);
+        //field->add_gravity_well(50, 90, 3.f);
+
+        //field->add_curl(100, 100, 1.f);
+
+        //field->add_gravity_well(100, 100, 5.0f);
 
         field->step();
 
         for (int i = 0; i < 10000; i++) {
             Vector2D pos = bodies[i].get_force_position(10);
             bodies[i].apply_force(field->get_force((int)pos.x, (int)pos.y));
-            bodies[i].update(0.06);
+            bodies[i].update(0.10);
 
             Vector2D new_pos = bodies[i].get_position();
             gl_renderer.update_particle(i, new_pos.x, new_pos.y);

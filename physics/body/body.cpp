@@ -2,7 +2,7 @@
 #include <cmath>
 
 Body::Body()
-    : body_pos(Vector2D(0, 0)), body_vel(Vector2D(0, 0)), body_acc(Vector2D(0, 0)), mass(1)
+    : body_pos(Vector2D(0, 0)), body_vel(Vector2D(0, 0)), body_acc(Vector2D(0, 0)), mass(5)
 {
 }
 
@@ -36,14 +36,16 @@ auto Body::get_force_position(int scale) -> Vector2D {
 }
 
 auto Body::update(float t) -> void {
-    this->body_vel = this->body_vel + (this->body_acc * t / 2);
+    this->body_acc *= .80;
+    this->body_vel = this->body_vel + (this->body_acc * t);
+    this->body_vel *= .95;
     this->body_pos = this->body_pos + (this->body_vel * t);
 
     this->time--;
 }
 
 auto Body::apply_force(Vector2D&& force) -> void {
-    this->body_acc = force/this->mass;
+    this->body_acc = this->body_acc + (force/this->mass);
 }
 
 

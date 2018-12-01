@@ -40,7 +40,7 @@ auto Vector_Field::step() -> void {
                 }
             }
             if (cum_mag != 0)
-                newField[current_height_pos * field_width + current_width_pos] = (Vector2D(cum_x,cum_y) / cum_mag) * .999;
+                newField[current_height_pos * field_width + current_width_pos] = (Vector2D(cum_x,cum_y) / cum_mag);// * .999;
             else
                 newField[current_height_pos * field_width + current_width_pos] = 0;
         }
@@ -118,7 +118,6 @@ auto Vector_Field::add_curl(int x, int y, float gravForce) -> void {
         return;        
     }
 
-    Vector2D ourVector = field[x + (field_width * y)];
     int val;
     for(int w = -1; w <= 1; w++) {
         int width_to_test = x + w;
@@ -134,9 +133,33 @@ auto Vector_Field::add_curl(int x, int y, float gravForce) -> void {
     }
 }
 
+auto Vector_Field::add_inward_curl(int x, int y, float gravForce) ->void {
+    if(!is_part_of_field(x, y)) {
+        std::cout << "Attempted to add inward curl ouside of field" << std::endl;
+        return;        
+    }
+
+    int val;
+    for(int w = -1; w <= 1; w++) {
+        int width_to_test = x + w;
+        for(int h = -1; h <= 1; h++) {
+            int height_to_test = y + h;           
+            if(is_part_of_field(width_to_test, height_to_test)) {
+                val = width_to_test + (field_width * height_to_test);
+
+                Vector2D adj(w, h);
+                Vector2D ortho(adj.get_ortho());
+                adj += ortho;
+                adj /= -2;
+                field[val] = adj.normalized() * gravForce;
+            }
+        }
+    }
+}
+
 auto Vector_Field::add_wall(int x, int y, int width, int height) -> void {
-    for(int i = x; i < width; i++){
-        for(int p = y; p < height; p++){
+    for(int i = x; i <= width + x; i++){
+        for(int p = y; p <= height + y; p++){
             field[i + (p * field_width)] = 0;
         }
     }
