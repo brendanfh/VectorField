@@ -4,7 +4,7 @@
 #ifdef APPLE
 #include <OpenGL/gl3.h>
 #else
-#include <GL/gl3.h>
+#include <GLES3/gl3.h>
 #endif
 
 #include <iostream>
