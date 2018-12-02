@@ -1,7 +1,12 @@
 #ifndef _GL_RENDERER_
 #define _GL_RENDERER_
 
-#include <GLES3/gl3.h>
+#ifdef APPLE
+#include <OpenGL/gl3.h>
+#else
+#include <GL/gl3.h>
+#endif
+
 #include <iostream>
 #include <memory>
 #include "../physics/vector_field/vector_field.h"

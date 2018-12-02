@@ -11,23 +11,7 @@
 
 #define NUM_THREADS 4
 
-pthread_barrier_t update_barrier;
-
 Vector_Field* field;
-void* threading(void* test){
-    long threadID = long(test);
-    int totalVectors = field->get_total_vectors();
-    while(1)
-    {
-        for(int i = threadID; i < totalVectors; i += NUM_THREADS)
-        {
-            field->step(i);
-        }
-
-        pthread_barrier_wait(&update_barrier);
-    }
-}
-
 auto main() -> int {
     srand(time(NULL));
 

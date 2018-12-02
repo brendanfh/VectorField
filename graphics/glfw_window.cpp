@@ -15,9 +15,6 @@ auto GLFW_Window::create() -> void {
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
     m_window = glfwCreateWindow(m_width, m_height, "Fluid Flow", NULL, NULL);
 
     glfwSetErrorCallback([](int error, const char* description) {

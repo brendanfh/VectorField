@@ -1,4 +1,5 @@
 #include <cmath>
+#include <string>
 #include "./vector2D.h"
 
 Vector2D::Vector2D()
@@ -127,8 +128,4 @@ auto Vector2D::map(std::function<float (float)> function) -> void {
     char buffer[50];
     sprintf(buffer, "[%.2f, %.2f]", this->x, this->y);
     return std::string(buffer);
-}
-
-auto operator<< (std::ostream& output, Vector2D&& vec) -> std::ostream& {
-    output << vec.to_string();
 }
