@@ -135,17 +135,17 @@ auto GL_Renderer::update_field(Vector_Field& vf) -> void {
             tx /= l;
             ty /= l;
 
-            tx *= 3;
-            ty *= 3;
+            tx *= 2;
+            ty *= 2;
 
             m_vertex_data[ind * 8 + 0] = px - tx;
             m_vertex_data[ind * 8 + 1] = py - ty;
             m_vertex_data[ind * 8 + 2] = px + tx;
             m_vertex_data[ind * 8 + 3] = py + ty;
-            m_vertex_data[ind * 8 + 4] = vx + tx;
-            m_vertex_data[ind * 8 + 5] = vy + ty;
-            m_vertex_data[ind * 8 + 6] = vx - tx;
-            m_vertex_data[ind * 8 + 7] = vy - ty;
+            m_vertex_data[ind * 8 + 4] = vx;
+            m_vertex_data[ind * 8 + 5] = vy;
+            m_vertex_data[ind * 8 + 6] = vx;
+            m_vertex_data[ind * 8 + 7] = vy;
         }
     }
 }
@@ -174,17 +174,13 @@ auto GL_Renderer::rebuffer_data() -> void {
 }
 
 
-auto GL_Renderer::render() -> void {
-    glClearColor(0.1, 0.1, 0.1, 1);
+auto GL_Renderer::render(Transform2D& transform) -> void {
+    glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    const float mat[9] = {
-        2.f / 2000.f, 0.f, 0.f,
-        0.f, -2.f / 2000.f, 0.f,
-        -1.f, 1.f, 1.f
-    };
+	std::unique_ptr<float[]> mat = transform.to_matrix();
 
-    glUniformMatrix3fv(m_proj_mat_loc, 1, GL_FALSE, (const GLfloat*) mat);
+    glUniformMatrix3fv(m_proj_mat_loc, 1, GL_FALSE, (const GLfloat*) mat.get());
 
     glUseProgram(m_program);
     glEnableVertexAttribArray(m_a_pos_loc);

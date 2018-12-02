@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <memory>
+#include "../utils/transform2D.h"
 #include "../physics/vector_field/vector_field.h"
 
 class GL_Renderer {
@@ -41,7 +42,7 @@ class GL_Renderer {
         auto update_field(Vector_Field& vf) -> void;
         auto update_particle(int index, float x, float y) -> void;
 
-        auto render() -> void;
+        auto render(Transform2D& transform) -> void;
 };
 
 #endif

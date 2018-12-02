@@ -40,10 +40,16 @@ auto GLFW_Window::create() -> void {
 }
 
 
+auto GLFW_Window::is_key_down(int key) const -> bool {
+	return glfwGetKey(m_window, key);
+}
+
+
 auto GLFW_Window::poll_events() -> void {
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
+
 
 
 [[nodiscard]] auto GLFW_Window::is_initialized() const -> bool {

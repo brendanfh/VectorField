@@ -16,6 +16,7 @@ class GLFW_Window {
         ~GLFW_Window();
 
         auto create() -> void;
+		auto is_key_down(int key) const -> bool;
         auto poll_events() -> void;
 
         [[nodiscard]] auto is_initialized() const -> bool;
