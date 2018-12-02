@@ -52,7 +52,7 @@ auto Vector_Field::step(int pos) -> void {
     int row = pos / field_width;
     int column = pos % field_width;
 
-    float cum_x = 0, cum_y = 0, cum_mag, mag;
+    float cum_x = 0, cum_y = 0, cum_mag = 0.f, mag;
     for(int i = -1; i <= 1; i++) {
         int width_to_test = column + i;
         for(int x = -1; x <= 1; x++) {
@@ -66,7 +66,13 @@ auto Vector_Field::step(int pos) -> void {
             }
         }
     }
-    newField[row * field_width + column] = Vector2D(cum_x/cum_mag,cum_y/cum_mag);
+    if (cum_mag != 0)
+        newField[row * field_width + column] = (Vector2D(cum_x,cum_y) / cum_mag) * .98;
+    else
+        newField[row * field_width + column] = 0;
+}
+
+auto Vector_Field::swap_fields() -> void {
     newField.swap(field);
 }
 

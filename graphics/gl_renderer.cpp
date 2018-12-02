@@ -84,11 +84,11 @@ auto GL_Renderer::setup() -> void {
     int j = 0;
     for (int i = 0; i < vec_width * vec_height; i++) {
         index_data[i * 6 + 0] = j + 0;
-        index_data[i * 6 + 1] = j + 1;
-        index_data[i * 6 + 2] = j + 2;
+        index_data[i * 6 + 1] = j + 2;
+        index_data[i * 6 + 2] = j + 1;
         index_data[i * 6 + 3] = j + 0;
-        index_data[i * 6 + 4] = j + 2;
-        index_data[i * 6 + 5] = j + 3;
+        index_data[i * 6 + 4] = j + 3;
+        index_data[i * 6 + 5] = j + 2;
         j += 4;
     }
 

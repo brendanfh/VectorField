@@ -21,6 +21,7 @@ class Vector_Field {
 
         auto step() -> void;
         auto step(int pos) -> void;
+        auto swap_fields() -> void;
         auto add_gravity_well(int x, int y, float gravForce) -> void;
         auto add_explosion(int x, int y, float gravForce) -> void;
         auto add_curl(int x, int y, float gravForce) -> void;
