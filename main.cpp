@@ -29,16 +29,7 @@ void* threading(void* test){
 }
 
 auto main() -> int {
-    //pthread_barrier_init(&update_barrier, NULL, NUM_THREADS + 1);
-    //pthread_t id[NUM_THREADS];
-    //int thread_id_parameter[NUM_THREADS];
-
-    /*
-    for(int i = 0; i < NUM_THREADS; i++){
-        thread_id_parameter[i] = i;
-        pthread_create(&id[i], NULL, threading, &thread_id_parameter[i]);
-    }
-    */
+    srand(time(NULL));
 
     Body* bodies = new Body[10000];
     for (int i = 0; i < 10000; i++) {
@@ -59,10 +50,7 @@ auto main() -> int {
         //field->add_gravity_well(30, 30, 1.0f);
         //field->add_gravity_well(35, 30, 1.0f);
         //field->add_gravity_well(60, 40, 2.0f);
-        //field->add_gravity_well(20, 90, 2.0f);
         //field->add_gravity_well(99, 99, 2.5f);
-        field->add_curl(50, 100, 3.f);
-        field->add_curl(150, 100, -3.f);
         //field->add_wall(100, 40, 20, 20);
 
         //field->add_gravity_well(50, 50, 1.f);
@@ -79,12 +67,24 @@ auto main() -> int {
 
         //field->add_gravity_well(100, 100, 5.0f);
 
+        //field->add_explosion(100, 100, 9001.f);
+
+        field->add_curl(50, 100, 3.f);
+        field->add_inward_curl(150, 100, 3.f);
+        field->add_inward_curl((int)(sin(t / 360.f) * 80) + 100, (int)(cos(t / 720.f) * 40.f) + 68, 20.f);
+        field->add_gravity_well(20, 90, 2.0f);
+        if (t % 1000 == 10)
+            field->add_explosion(rand() % 150 + 25, rand() % 150 + 25, 15.f);
+        field->add_curl(50, 100, 3.f);
+        field->add_inward_curl(150, 100, 3.f);
+        field->add_inward_curl((int)(sin(t / 360.f) * 80) + 100, (int)(cos(t / 720.f) * 40.f) + 68, 20.f);
+
         field->step();
 
         for (int i = 0; i < 10000; i++) {
             Vector2D pos = bodies[i].get_force_position(10);
             bodies[i].apply_force(field->get_force((int)pos.x, (int)pos.y));
-            bodies[i].update(0.10);
+            bodies[i].update(0.2);
 
             Vector2D new_pos = bodies[i].get_position();
             gl_renderer.update_particle(i, new_pos.x, new_pos.y);

@@ -40,7 +40,7 @@ auto Vector_Field::step() -> void {
                 }
             }
             if (cum_mag != 0)
-                newField[current_height_pos * field_width + current_width_pos] = (Vector2D(cum_x,cum_y) / cum_mag);// * .999;
+                newField[current_height_pos * field_width + current_width_pos] = (Vector2D(cum_x,cum_y) / cum_mag) * .98;
             else
                 newField[current_height_pos * field_width + current_width_pos] = 0;
         }

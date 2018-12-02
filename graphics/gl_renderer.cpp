@@ -1,4 +1,5 @@
 #include "./gl_renderer.h"
+#include <cmath>
 
 const char *vertex_shader_src =
     "uniform mat3 u_proj;"
@@ -114,7 +115,7 @@ auto GL_Renderer::update_field(Vector_Field& vf) -> void {
     int ind;
     float scale_factor = (float) vf.get_scale_factor();
 
-    float px, py, vx, vy, tx, ty;
+    float px, py, vx, vy, tx, ty, l;
 
     for (int y = 0, ym = vf.get_height(); y < ym; y++) {
         for (int x = 0, xm = vf.get_width(); x < xm; x++) {
@@ -130,8 +131,12 @@ auto GL_Renderer::update_field(Vector_Field& vf) -> void {
             tx = py - vy;
             ty = vx - px;
 
-            tx *= 0.1;
-            ty *= 0.1;
+            l = sqrt(tx * tx + ty * ty);
+            tx /= l;
+            ty /= l;
+
+            tx *= 3;
+            ty *= 3;
 
             m_vertex_data[ind * 8 + 0] = px - tx;
             m_vertex_data[ind * 8 + 1] = py - ty;

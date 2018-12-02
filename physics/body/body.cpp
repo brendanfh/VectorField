@@ -2,7 +2,7 @@
 #include <cmath>
 
 Body::Body()
-    : body_pos(Vector2D(0, 0)), body_vel(Vector2D(0, 0)), body_acc(Vector2D(0, 0)), mass(5)
+    : body_pos(Vector2D(0, 0)), body_vel(Vector2D(0, 0)), body_acc(Vector2D(0, 0)), mass(rand() % 10 + 3)
 {
 }
 
